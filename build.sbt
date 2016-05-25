@@ -16,7 +16,8 @@ libraryDependencies ++= Seq(
   "org.slf4j" % "jcl-over-slf4j" % "1.7.7",
   "org.slf4j" % "log4j-over-slf4j" % "1.7.7",
   "ch.qos.logback" % "logback-classic" % "1.1.2",
-  "com.typesafe.akka" %% "akka-testkit" % "2.4.6" % "test"
+  "com.typesafe.akka" %% "akka-testkit" % "2.4.6" % "test",
+  "org.scalatest" %% "scalatest" % "2.2.4" % "test"
 )
 
 

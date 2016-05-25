@@ -1,7 +1,6 @@
-package com.github.taigetco
+package com.github.taigetco.supermarket
 
 import java.util.concurrent.ThreadLocalRandom
-import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.duration._
 
 import akka.actor._
@@ -16,6 +15,9 @@ object Customer {
 class Customer extends Actor with ActorLogging{
   import context._
 
+  val maxWaitSeconds = system.settings.config.getInt("supermarket.customer.wait.max.seconds")
+  val minWaitSeconds = system.settings.config.getInt("supermarket.customer.wait.min.seconds")
+
   var supermarket: ActorRef = null
 
   var buyTick: Cancellable = null
@@ -24,7 +26,7 @@ class Customer extends Actor with ActorLogging{
     case OpenUp =>
       //every 1 ~ 3 seconds, send Buy event to customer, which indicate Customer buy one Goods
       supermarket = sender()
-      buyTick = system.scheduler.schedule(Duration.Zero, (ThreadLocalRandom.current().nextInt(3) + 1).seconds)(self ! Buy)
+      buyTick = system.scheduler.schedule(Duration.Zero, randomWaitTime(maxWaitSeconds, minWaitSeconds).seconds)(self ! Buy)
       become(buyGoods)
   }
 
@@ -40,6 +42,4 @@ class Customer extends Actor with ActorLogging{
         unbecome()
       }
   }
-
-
 }
